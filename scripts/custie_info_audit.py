@@ -65,7 +65,7 @@ def clean(df: pd.DataFrame) -> pd.DataFrame:
             Columns.ADDRESS: str,
             Columns.EMAIL: str,
             Columns.EMAIL_OPT_IN: bool,
-            Columns.LAST_ORDER: datetime,
+            Columns.LAST_ORDER: 'datetime64[ns]',
             Columns.NAME: str,
             Columns.PHONE: str,
             Columns.SECONDARY_TEL: str,
