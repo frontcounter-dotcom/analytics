@@ -23,26 +23,24 @@ CONTACT_COLS_ALL: Final[List[str]] = CONTACT_COLS + [Columns.SECONDARY_TEL]
 OUTPUT_DIR: Final[str] = "~/analytics/customer_info"
 
 def main() -> None:
-
     custie_df = pd.read_csv(CUSTIE_CSV_FP)
-
     custie_df = clean(df=custie_df)
-
     custie_df = find_and_delete_invalid(df=custie_df)
-    breakpoint()
     custie_df = custie_df[
         ~(custie_df[CONTACT_COLS_ALL].isna().all(axis=1) &
         (custie_df[Columns.TOTAL_ORDERS] > 0))
     ]
-    breakpoint()
+    
     missing_contact_df = custie_df[custie_df[CONTACT_COLS].isna().any(axis=1)]
-    breakpoint()
     to_email_df = missing_contact_df[missing_contact_df[Columns.EMAIL].notna()]
-    breakpoint()
     to_call_df = missing_contact_df[
-        missing_contact_df[Columns.PHONE].notna() |
-        missing_contact_df[Columns.SECONDARY_TEL].notna()
+        missing_contact_df[Columns.EMAIL].isna() &
+        (
+            missing_contact_df[Columns.PHONE].notna() |
+            missing_contact_df[Columns.SECONDARY_TEL].notna()
+        )
     ]
+    breakpoint()
 
     save_output(to_email_df=to_email_df, to_call_df=to_call_df)
 
