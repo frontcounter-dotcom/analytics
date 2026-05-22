@@ -36,19 +36,18 @@ def main() -> None:
     missing_contact_df = custie_df[custie_df[CONTACT_COLS].isna().any(axis=1)]
     to_email_df = missing_contact_df[
         missing_contact_df[Columns.EMAIL].notna() &
-        (missing_contact_df[Columns.EMAIL_OPT_IN] is True)
+        (missing_contact_df[Columns.EMAIL_OPT_IN] == True)
     ]
     to_call_df = missing_contact_df[
         (
             missing_contact_df[Columns.EMAIL].isna() |
-            missing_contact_df[Columns.EMAIL_OPT_IN] is not True
+            missing_contact_df[Columns.EMAIL_OPT_IN] != True
         ) &
         (
             missing_contact_df[Columns.PHONE].notna() |
             missing_contact_df[Columns.SECONDARY_TEL].notna()
         )
     ].sort_values(by=Columns.LAST_ORDER, ascending=False)
-    breakpoint()
 
     save_output(to_email_df=to_email_df, to_call_df=to_call_df)
 
