@@ -36,7 +36,7 @@ def main() -> None:
     missing_contact_df = custie_df[custie_df[CONTACT_COLS].isna().any(axis=1)]
     to_email_df = missing_contact_df[
         missing_contact_df[Columns.EMAIL].notna() &
-        missing_contact_df[Columns.EMAIL_OPT_IN] is True
+        (missing_contact_df[Columns.EMAIL_OPT_IN] is True)
     ]
     to_call_df = missing_contact_df[
         (
