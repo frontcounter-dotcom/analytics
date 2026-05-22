@@ -12,6 +12,7 @@ import pandas as pd
 class Columns:
     ADDRESS = "Address"
     EMAIL = "Email"
+    EMAIL_OPT_IN = "Email Opt In"
     NAME = "Name"
     PHONE = "Phone"
     SECONDARY_TEL = "Secondary Tel"
@@ -30,17 +31,22 @@ def main() -> None:
         ~(custie_df[CONTACT_COLS_ALL].isna().all(axis=1) &
         (custie_df[Columns.TOTAL_ORDERS] > 0))
     ]
-    
+
     missing_contact_df = custie_df[custie_df[CONTACT_COLS].isna().any(axis=1)]
-    to_email_df = missing_contact_df[missing_contact_df[Columns.EMAIL].notna()]
+    to_email_df = missing_contact_df[
+        missing_contact_df[Columns.EMAIL].notna() &
+        missing_contact_df[Columns.EMAIL_OPT_IN] is True
+    ]
     to_call_df = missing_contact_df[
-        missing_contact_df[Columns.EMAIL].isna() &
+        (
+            missing_contact_df[Columns.EMAIL].isna() |
+            missing_contact_df[Columns.EMAIL_OPT_IN] not True
+        ) &
         (
             missing_contact_df[Columns.PHONE].notna() |
             missing_contact_df[Columns.SECONDARY_TEL].notna()
         )
     ]
-    breakpoint()
 
     save_output(to_email_df=to_email_df, to_call_df=to_call_df)
 
@@ -50,10 +56,13 @@ def main() -> None:
 
 def clean(df: pd.DataFrame) -> pd.DataFrame:
     """Clean up dataframe and set types."""
+    df[Columns.EMAIL_OPT_IN] = [val if val == 1 else 0 for val in df['Email Opt In']]
+
     df = df.astype(
         dtype={
             Columns.ADDRESS: str,
             Columns.EMAIL: str,
+            Columns.EMAIL_OPT_IN: bool,
             Columns.NAME: str,
             Columns.PHONE: str,
             Columns.SECONDARY_TEL: str,
