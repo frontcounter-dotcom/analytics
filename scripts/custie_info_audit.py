@@ -41,13 +41,14 @@ def main() -> None:
     to_call_df = missing_contact_df[
         (
             missing_contact_df[Columns.EMAIL].isna() |
-            missing_contact_df[Columns.EMAIL_OPT_IN] not True
+            missing_contact_df[Columns.EMAIL_OPT_IN] is not True
         ) &
         (
             missing_contact_df[Columns.PHONE].notna() |
             missing_contact_df[Columns.SECONDARY_TEL].notna()
         )
     ].sort_values(by=Columns.LAST_ORDER, ascending=False)
+    breakpoint()
 
     save_output(to_email_df=to_email_df, to_call_df=to_call_df)
 
