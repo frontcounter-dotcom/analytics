@@ -13,6 +13,7 @@ class Columns:
     ADDRESS = "Address"
     EMAIL = "Email"
     EMAIL_OPT_IN = "Email Opt In"
+    LAST_ORDER = "Last Order"
     NAME = "Name"
     PHONE = "Phone"
     SECONDARY_TEL = "Secondary Tel"
@@ -46,7 +47,7 @@ def main() -> None:
             missing_contact_df[Columns.PHONE].notna() |
             missing_contact_df[Columns.SECONDARY_TEL].notna()
         )
-    ]
+    ].sort_values(by=Columns.LAST_ORDER, ascending=False)
 
     save_output(to_email_df=to_email_df, to_call_df=to_call_df)
 
@@ -63,6 +64,7 @@ def clean(df: pd.DataFrame) -> pd.DataFrame:
             Columns.ADDRESS: str,
             Columns.EMAIL: str,
             Columns.EMAIL_OPT_IN: bool,
+            Columns.LAST_ORDER: datetime,
             Columns.NAME: str,
             Columns.PHONE: str,
             Columns.SECONDARY_TEL: str,
