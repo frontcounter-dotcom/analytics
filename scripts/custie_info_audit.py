@@ -7,9 +7,10 @@ import logging
 from typing import Final, List
 from datetime import datetime
 
-from email_validator import validate_email, EmailNotValidError
+import email_validator
 import numpy as np
 import pandas as pd
+
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 logger = logging.getLogger(__name__)
@@ -93,12 +94,12 @@ def find_and_delete_invalid(df: pd.DataFrame) -> pd.DataFrame:
         try:
             email = "" if email == np.nan else email
             email_validated = (
-                validate_email(str(email), check_deliverability=False).normalized
+                email_validator.validate_email(str(email), check_deliverability=False).normalized
                 if email
                 else np.nan
             )
 
-        except EmailNotValidError:
+        except email_validator.EmailNotValidError:
             float_email = np.nan
             try:
                 float_email = float(email)
