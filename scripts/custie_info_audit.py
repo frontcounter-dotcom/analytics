@@ -2,6 +2,7 @@
 # email_validator==2.3.0
 # numpy==2.4.4
 # pandas==3.0.2
+# typeguard==4.5.1
 
 import logging
 from typing import Final, List
@@ -10,6 +11,7 @@ from datetime import datetime
 import email_validator
 import numpy as np
 import pandas as pd
+from typeguard import typechecked
 
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
@@ -30,6 +32,8 @@ CONTACT_COLS: Final[List[str]] = [Columns.EMAIL, Columns.PHONE, Columns.ADDRESS]
 CONTACT_COLS_ALL: Final[List[str]] = CONTACT_COLS + [Columns.SECONDARY_TEL]
 OUTPUT_DIR: Final[str] = "~/analytics/customer_info"
 
+
+@typechecked
 def main() -> None:
     custie_df = pd.read_csv(CUSTIE_CSV_FP)
     custie_df = clean(df=custie_df)
@@ -60,7 +64,7 @@ def main() -> None:
     return
 
 
-
+@typechecked
 def clean(df: pd.DataFrame) -> pd.DataFrame:
     """Clean up dataframe and set types."""
     df[Columns.EMAIL_OPT_IN] = [val if val == 1 else 0 for val in df['Email Opt In']]
@@ -86,6 +90,7 @@ def clean(df: pd.DataFrame) -> pd.DataFrame:
     return df
 
 
+@typechecked
 def find_and_delete_invalid(df: pd.DataFrame) -> pd.DataFrame:
     """Validate contact fields, and delete invalid contact info."""
     normalized_emails = []
@@ -117,6 +122,7 @@ def find_and_delete_invalid(df: pd.DataFrame) -> pd.DataFrame:
     return df
 
 
+@typechecked
 def save_output(to_email_df: pd.DataFrame, to_call_df: pd.DataFrame) -> None:
     """Save outputs."""
     today = str(datetime.today())
