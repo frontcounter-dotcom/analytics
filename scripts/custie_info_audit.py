@@ -93,7 +93,7 @@ def find_and_delete_invalid(df: pd.DataFrame) -> pd.DataFrame:
         try:
             email = "" if email == np.nan else email
             email_validated = (
-                validate_email(str(email), check_deliverability=True).normalized
+                validate_email(str(email), check_deliverability=False).normalized
                 if email
                 else np.nan
             )
