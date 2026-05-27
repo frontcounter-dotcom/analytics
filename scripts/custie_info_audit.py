@@ -86,7 +86,6 @@ def clean(df: pd.DataFrame) -> pd.DataFrame:
 
 def find_and_delete_invalid(df: pd.DataFrame) -> pd.DataFrame:
     """Validate contact fields, and delete invalid contact info."""
-    then = datetime.now()
     normalized_emails = []
     for email in df[Columns.EMAIL]:
         email_validated = np.nan
@@ -102,10 +101,6 @@ def find_and_delete_invalid(df: pd.DataFrame) -> pd.DataFrame:
             pass
 
         normalized_emails.append(email_validated)
-
-    now = datetime.now()
-
-    time_elapsed = now - then
     
     df[Columns.EMAIL] = normalized_emails
 
