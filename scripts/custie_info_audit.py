@@ -107,26 +107,31 @@ def find_and_delete_invalid(df: pd.DataFrame) -> pd.DataFrame:
 def find_and_delete_invalid_emails(df: pd.DataFrame) -> pd.DataFrame:
     """Format and validate email, and delete invalid."""
     normalized_emails = []
+    is_valid_email = []
     for email in df[Columns.EMAIL]:
         email_validated = np.nan
+        is_valid = False
+        email = "" if email is np.nan else email
+
         try:
-            email = "" if email == np.nan else email
             email_validated = (
                 email_validator.validate_email(str(email), check_deliverability=False).normalized
                 if email
                 else np.nan
             )
+            is_valid = True
 
         except email_validator.EmailNotValidError:
-            float_email = np.nan
-            try:
-                float_email = float(email)
-                if not np.isnan(float(email)):
-                    logging.warning(f"Found invalid email {email}. Replacing with `np.nan`")
-            except ValueError:
-                logging.warning(f"Found invalid email {email}. Replacing with `np.nan`")
+            logging.warning(f"Found invalid email {email}. Replacing with `np.nan`")
 
         normalized_emails.append(email_validated)
+        is_valid_email.append(is_valid)
+
+    invalid_emails_df = df.copy()
+    invalid_emails_df = invalid_emails_df[[v is False for v in is_valid_email]]
+    invalid_emails_fp = f"{OUTPUT_DIR}/invalid_emails_{TODAY}.csv"
+    logger.info(f"Saving invalid emails to {invalid_emails_fp}")
+    invalid_emails_df.to_csv(invalid_emails_fp)
     
     df[Columns.EMAIL] = normalized_emails
 
