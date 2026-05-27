@@ -100,8 +100,6 @@ def find_and_delete_invalid(df: pd.DataFrame) -> pd.DataFrame:
 
         except EmailNotValidError:
             pass
-        except Exception as e:
-            breakpoint()
 
         normalized_emails.append(email_validated)
 
@@ -109,7 +107,6 @@ def find_and_delete_invalid(df: pd.DataFrame) -> pd.DataFrame:
 
     time_elapsed = now - then
     
-    breakpoint()
     df[Columns.EMAIL] = normalized_emails
 
     ...
