@@ -3,14 +3,16 @@
 # numpy==2.4.4
 # pandas==3.0.2
 
+import logging
 from typing import Final, List
 from datetime import datetime
-import logging
 
+from email_validator import validate_email, EmailNotValidError
 import numpy as np
 import pandas as pd
 
-from email_validator import validate_email, EmailNotValidError
+logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
+logger = logging.getLogger(__name__)
 
 class Columns:
     ADDRESS = "Address"
@@ -97,7 +99,13 @@ def find_and_delete_invalid(df: pd.DataFrame) -> pd.DataFrame:
             )
 
         except EmailNotValidError:
-            pass
+            float_email = np.nan
+            try:
+                float_email = float(email)
+                if not np.isnan(float(email)):
+                    logging.warning(f"Found invalid email {email}. Replacing with `np.nan`")
+            except ValueError:
+                logging.warning(f"Found invalid email {email}. Replacing with `np.nan`")
 
         normalized_emails.append(email_validated)
     
