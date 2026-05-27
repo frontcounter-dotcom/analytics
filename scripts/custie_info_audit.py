@@ -93,6 +93,15 @@ def clean(df: pd.DataFrame) -> pd.DataFrame:
 @typechecked
 def find_and_delete_invalid(df: pd.DataFrame) -> pd.DataFrame:
     """Validate contact fields, and delete invalid contact info."""
+    df = find_and_delete_invalid_emails(df=df)
+
+    ...
+    
+    return df
+
+@typechecked
+def find_and_delete_invalid_emails(df: pd.DataFrame) -> pd.DataFrame:
+    """Validate contact fields, and delete invalid contact info."""
     normalized_emails = []
     for email in df[Columns.EMAIL]:
         email_validated = np.nan
@@ -117,8 +126,6 @@ def find_and_delete_invalid(df: pd.DataFrame) -> pd.DataFrame:
     
     df[Columns.EMAIL] = normalized_emails
 
-    ...
-    
     return df
 
 
