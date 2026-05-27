@@ -1,13 +1,17 @@
 # conda env info_audit_py3.13:
+# email_validator==2.3.0
 # numpy==2.4.4
 # pandas==3.0.2
 
 from typing import Final, List
 from datetime import datetime
 import logging
+from time import time
 
 import numpy as np
 import pandas as pd
+
+from email_validator import validate_email, EmailNotValidError
 
 class Columns:
     ADDRESS = "Address"
@@ -82,7 +86,34 @@ def clean(df: pd.DataFrame) -> pd.DataFrame:
 
 def find_and_delete_invalid(df: pd.DataFrame) -> pd.DataFrame:
     """Validate contact fields, and delete invalid contact info."""
+    then = datetime.now()
+    normalized_emails = []
+    for email in df[Columns.EMAIL]:
+        email_validated = np.nan
+        try:
+            email = "" if email == np.nan else email
+            email_validated = (
+                validate_email(str(email), check_deliverability=True).normalized
+                if email
+                else np.nan
+            )
+
+        except EmailNotValidError:
+            pass
+        except Exception as e:
+            breakpoint()
+
+        normalized_emails.append(email_validated)
+
+    now = datetime.now()
+
+    time_elapsed = now - then
+    
+    breakpoint()
+    df[Columns.EMAIL] = normalized_emails
+
     ...
+    
     return df
 
 
