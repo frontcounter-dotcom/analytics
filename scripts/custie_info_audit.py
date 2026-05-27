@@ -29,16 +29,18 @@ class Columns:
     SECONDARY_TEL = "Secondary Tel"
     TOTAL_ORDERS = "Total orders"
 
-CUSTIE_CSV_FP: Final[str] = "~/Downloads/CC-Customers_2019-11-26-2026-05-21.csv"
+INPUT_CSV_FP: Final[str] = "~/analytics/customer_info/2026.05.27/CC-Customers_1969-12-31-2026-05-27.csv"
+OUTPUT_DIR: Final[str] = "~/analytics/customer_info/2026.05.27"
+
 CONTACT_COLS: Final[List[str]] = [Columns.EMAIL, Columns.PHONE, Columns.ADDRESS]
 CONTACT_COLS_ALL: Final[List[str]] = CONTACT_COLS + [Columns.SECONDARY_TEL]
-OUTPUT_DIR: Final[str] = "~/analytics/customer_info"
+
 TODAY = str(datetime.today())
 
 
 @typechecked
 def main() -> None:
-    custie_df = pd.read_csv(CUSTIE_CSV_FP)
+    custie_df = pd.read_csv(INPUT_CSV_FP)
     custie_df = clean(df=custie_df)
     custie_df = find_and_delete_invalid(df=custie_df)
     custie_df = custie_df[
